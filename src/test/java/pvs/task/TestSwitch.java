@@ -28,18 +28,19 @@ public class TestSwitch {
         }
     }
 
-//    public int arrowSwitchStatement(int value) {
-//        int a = 0;
-//        switch (value) {
-//            case 1 -> {
-//                a = 10;
-//            }
-//            case 2, 3 -> a = 20;
-//            case 4 -> a += 5;
-//            default -> a = 100;
-//        }
-//        return a;
-//    }
+    public int arrowSwitchStatement(int value) {
+        int a = 0;
+        switch (value) {
+            case 1 -> {
+                a = 10;
+                a+=2;
+            }
+            default -> a = 100;
+            case 2, 3 -> a = 20;
+            case 4 -> a += 5;
+        }
+        return a;
+    }
 
 //
 //    public int method3(int value) {

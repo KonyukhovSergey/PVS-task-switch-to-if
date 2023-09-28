@@ -36,5 +36,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
-/.idea/sonarlint/
-/spooned-classes/
+/.idea/sonarlint/**
+/spooned-classes/**

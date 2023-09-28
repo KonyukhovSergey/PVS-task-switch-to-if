@@ -5,7 +5,9 @@ import spoon.reflect.code.CtSwitch;
 import spoon.reflect.code.CtSwitchExpression;
 import spoon.reflect.declaration.CtElement;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SwitchProcessor extends AbstractProcessor {
     @Override
@@ -34,6 +36,10 @@ public class SwitchProcessor extends AbstractProcessor {
                 case ARROW -> getCodeForStatementArrowCase(sw);
                 case COLON -> getCodeForStatementColonCase(sw);
             });
+
+            // it does not work...
+            // snippet.setValue(snippet.prettyprint());
+
             sw.replace(snippet);
         }
     }
@@ -42,13 +48,26 @@ public class SwitchProcessor extends AbstractProcessor {
 
         // if(v == e1) {stts1} else if (v == e2) {stts2}... else {stts3}
 
-        return sw.getCases().stream()
-                .map(swc -> "  if(" + sw.getSelector() + " == " + swc.getCaseExpression() +
-                        swc.getStatements().stream()
-                                .map(Object::toString)
-                                .collect(Collectors.joining(";\n    ", ") {\n    ", ";\n  }"))
-                )
-                .collect(Collectors.joining("\n", "do {\n", "\n} while (false)"));
+        return Stream.concat(
+                sw.getCases().stream()
+                        .filter(swc -> !swc.getCaseExpressions().isEmpty())
+                        .map(swc -> swc.getCaseExpressions().stream()
+                                .map(e -> sw.getSelector() + " == " + e.toString())
+                                .collect(Collectors.joining(
+                                        " || ",
+                                        "if(",
+                                        swc.getStatements().stream()
+                                                .map(Objects::toString)
+                                                .collect(Collectors.joining(";\n    ", ") {\n    ", ";\n  }")))
+                                )
+                        ),
+                sw.getCases().stream()
+                        .filter(swc -> swc.getCaseExpressions().isEmpty())
+                        .map(swc -> swc.getStatements().stream()
+                                .map(Objects::toString)
+                                .collect(Collectors.joining(";\n    ", "{\n    ", ";\n  }"))
+                        )
+        ).collect(Collectors.joining("\n else\n "));
     }
 
     private String getCodeForStatementColonCase(CtSwitch<?> sw) {
