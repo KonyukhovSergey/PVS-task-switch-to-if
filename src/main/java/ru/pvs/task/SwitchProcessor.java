@@ -2,6 +2,7 @@ package ru.pvs.task;
 
 import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.*;
+import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.stream.Stream;
 public class SwitchProcessor extends AbstractProcessor {
     @Override
     public boolean isToBeProcessed(CtElement candidate) {
-        return candidate instanceof CtSwitch<?> || candidate instanceof CtSwitchExpression<?, ?>;
+        return candidate instanceof CtSwitch<?> || candidate instanceof CtSwitchExpression<?, ?> || candidate instanceof CtClass<?>;
     }
 
     @Override
@@ -22,10 +23,15 @@ public class SwitchProcessor extends AbstractProcessor {
             process(sw);
         } else if (ctElement instanceof CtSwitchExpression<?, ?> sw) {
             process(sw);
+        } else if (ctElement instanceof CtClass<?> cl) {
+            cl.setSimpleName(cl.getSimpleName() + "2");
         }
     }
 
     private void process(CtSwitchExpression<?, ?> sw) {
+        CtLiteral<Object> literal = getFactory().createLiteral();
+        literal.setValue(100);
+        sw.replace(literal);
     }
 
     private void process(CtSwitch<?> sw) {
@@ -76,12 +82,15 @@ public class SwitchProcessor extends AbstractProcessor {
         return swc.getCaseExpressions().isEmpty()
                 ? sw.getCases().stream()
                 .filter(dc -> !dc.getCaseExpressions().isEmpty())
-                .map(dc -> sw.getSelector() + " != " + dc.getCaseExpression())
+                .map(dc -> "!java.util.Objects.equals(" + sw.getSelector() + ", " + dc.getCaseExpression() + ")")
+                //.map(dc -> sw.getSelector() + " != " + dc.getCaseExpression())
                 .collect(Collectors.joining(" && "))
-                : sw.getSelector() + " == " + swc.getCaseExpression();
+                : "java.util.Objects.equals(" + sw.getSelector() + ", " + swc.getCaseExpression() + ")"
+                //: sw.getSelector() + " == " + swc.getCaseExpression()
+                ;
     }
 
-    private boolean checkIfStatementsEndsWithBreak(List<CtStatement> statements) {
+    private CtBreak findLastBreakStatement(List<CtStatement> statements) {
         int lastStatementIndex = statements.size() - 1;
 
         while (lastStatementIndex >= 0) {
@@ -92,20 +101,20 @@ public class SwitchProcessor extends AbstractProcessor {
         }
 
         if (lastStatementIndex < 0) {
-            return false;
+            return null;
         }
 
         final var lastStatement = statements.get(lastStatementIndex);
 
         if (lastStatement instanceof CtBlock<?> ctBlock) {
-            return checkIfStatementsEndsWithBreak(ctBlock.getStatements());
+            return findLastBreakStatement(ctBlock.getStatements());
         }
 
-        return lastStatement instanceof CtBreak;
+        return (lastStatement instanceof CtBreak ctBreak) ? ctBreak : null;
     }
 
-    private boolean checkIfCaseHaveBreak(CtCase<?> swc) {
-        return checkIfStatementsEndsWithBreak(swc.getStatements());
+    private CtBreak findLastCtBreak(CtCase<?> swc) {
+        return findLastBreakStatement(swc.getStatements());
     }
 
     private String getCodeForStatementColonCase(CtSwitch<?> sw) {
@@ -118,6 +127,15 @@ public class SwitchProcessor extends AbstractProcessor {
             final var ifExpression = Stream.concat(expressions.stream(), Stream.of(caseExpression))
                     .collect(Collectors.joining(") || (", "(", ")"));
 
+            final var lastBreak = findLastCtBreak(swc);
+
+            if (lastBreak != null) {
+                expressions.clear();
+                lastBreak.delete();
+            } else {
+                expressions.add(caseExpression);
+            }
+
             sb
                     .append("if(")
                     .append(ifExpression)
@@ -125,11 +143,7 @@ public class SwitchProcessor extends AbstractProcessor {
                             .map(Object::toString)
                             .collect(Collectors.joining(";\n    ", ") {\n    ", ";\n  }")));
 
-            if (checkIfCaseHaveBreak(swc)) {
-                expressions.clear();
-            } else {
-                expressions.add(caseExpression);
-            }
+
         });
 
         return sb.toString();
