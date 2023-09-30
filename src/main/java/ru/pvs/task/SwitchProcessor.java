@@ -30,7 +30,7 @@ public class SwitchProcessor extends AbstractProcessor {
 
     private void process(CtSwitchExpression<?, ?> sw) {
         CtLiteral<Object> literal = getFactory().createLiteral();
-        literal.setValue(100);
+        literal.setValue(127);
         sw.replace(literal);
     }
 

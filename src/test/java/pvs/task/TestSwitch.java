@@ -1,5 +1,9 @@
 package pvs.task;
 
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class TestSwitch {
@@ -12,8 +16,15 @@ public class TestSwitch {
         emptySwitchStatement(111);
         colonSwitchStatement();
         colonSwitchStatement2();
-
         stringSwitchStatementColon();
+
+        arrowSwitchStatement();
+
+        switchExpressionCase();
+
+        switchExpression2();
+
+        //switchExpressionHard();
 
         return sb.toString();
     }
@@ -116,31 +127,87 @@ public class TestSwitch {
         }
     }
 
-    public int arrowSwitchStatement(int value) {
-        int a = 0;
-        switch (value) {
-            case 1 -> {
-                a = 10;
-                a += 2;
+    public void arrowSwitchStatement() {
+        for (int value = 0; value < 10; value++) {
+            log("-- arrow switch for " + value + " --");
+            switch (value) {
+                case 1 -> {
+                    log("one 10");
+                    log("one +2");
+                }
+                default -> log("default 100");
+                case 2, 3 -> log("2 or 3");
+                case 4 -> log("4");
             }
-            default -> a = 100;
-            case 2, 3 -> a = 20;
-            case 4 -> a += 5;
         }
-        return a;
     }
 
+    public int switchExpression(int value) {
+        return //aaa
+                switch (value) {
+                    default -> 100;
+                    case 1 -> {
+                        yield 10;
+                    }
+                    case 2, 3 -> 20;
+                    case 4 -> 25;
+                };
+    }
 
-    public int method3(int value) {
-        return switch (value) {
+    public void switchExpressionCase() {
+        IntStream.range(0, 10).forEach(i -> log("for " + i + " switch returns " + switchExpression(i)));
+    }
+
+    public void switchExpression2() {
+        log("aaaaa");
+
+        Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forEach(i -> log("aaaa " + i));
+
+        Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forEach(i -> log("aaaa " + switch (i) {
             default -> 100;
             case 1 -> {
                 yield 10;
             }
             case 2, 3 -> 20;
             case 4 -> 25;
-        };
-
+        }));
+//
+//        // в лямбдах ложка скипает свичи
+//        IntStream.range(0, 10).forEach(i -> log("aaaa " + switch (i) {
+//            default -> 100;
+//            case 1 -> {
+//                yield 10;
+//            }
+//            case 2, 3 -> 20;
+//            case 4 -> 25;
+//        }));
     }
+
+//    public void switchExpressionHard() {
+//        IntStream.range(0, 10).map(i -> switch (i) {
+//            default -> 100;
+//            case 1 -> {
+//                yield 10;
+//            }
+//            case 2, 3 -> 20;
+//            case 4 -> 25;
+//        }).forEach(i -> log("hard case " + i));
+//    }
+
+    // кажется оно в превью.
+//    public void switchPatternMatching(){
+//        final var items = new ArrayList<Object>();
+//        items.add("aaaaaaaaaaaaaaa");
+//        items.add(Integer.valueOf(100));
+//        items.add(new ArrayList<Double>());
+//
+//        for(var item:items){
+//            log(switch (item){
+//                case Integer i -> "integer" + i;
+//                default -> "a";
+//
+//            });
+//        }
+//    }
 
 }
