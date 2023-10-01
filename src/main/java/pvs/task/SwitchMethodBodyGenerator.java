@@ -1,4 +1,4 @@
-package ru.pvs.task;
+package pvs.task;
 
 import spoon.reflect.code.*;
 import spoon.reflect.declaration.CtMethod;

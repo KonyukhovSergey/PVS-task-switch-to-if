@@ -1,13 +1,10 @@
-package pvs.task;
+package tmp;
 
 
-import java.lang.annotation.Retention;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class TestSwitch {
+public class TestSwitch2222 {
 
     private final StringBuilder sb = new StringBuilder();
 

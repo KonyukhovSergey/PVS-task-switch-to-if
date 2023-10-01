@@ -1,11 +1,9 @@
-package ru.pvs.task;
+package pvs.task;
 
 import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.*;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtMethod;
-import spoon.support.reflect.code.CtAssignmentImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SwitchProcessor extends AbstractProcessor {
+
     @Override
     public boolean isToBeProcessed(CtElement candidate) {
-        return true;
-        //return candidate instanceof CtSwitch<?> || candidate instanceof CtSwitchExpression<?, ?> || candidate instanceof CtClass<?>;
+        return candidate instanceof CtSwitch<?> || candidate instanceof CtSwitchExpression<?, ?>;
     }
 
     @Override
@@ -26,8 +24,6 @@ public class SwitchProcessor extends AbstractProcessor {
             process(sw);
         } else if (ctElement instanceof CtSwitchExpression<?, ?> sw) {
             process(sw);
-        } else if (ctElement instanceof CtClass<?> cl) {
-            cl.setSimpleName(cl.getSimpleName() + "2");
         }
     }
 
