@@ -2,7 +2,6 @@ package ru.pvs.task;
 
 import pvs.task.TestSwitch;
 import spoon.Launcher;
-import spoon.processing.ProcessorPropertiesImpl;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -16,21 +15,21 @@ public class Main {
 
         System.out.println(expected);
 
-        System.out.println("\n\n\n");
+        System.out.println("\n\n-----------------------------------\n");
 
         final String[] largs = {
                 "-i", "src/test/java/pvs/task",
                 "-o", "target/spooned/",
-                "-p", "ru.pvs.task.SwitchProcessor",
+                //"-p", "ru.pvs.task.SwitchProcessor",
                 "--compile"
         };
 
         final Launcher launcher = new Launcher();
+        launcher.addProcessor(new SwitchProcessor());
 
         launcher.setArgs(largs);
         launcher.getEnvironment().setComplianceLevel(18);
         launcher.run();
-
 
         final var cl = loadSpoonedClass();
         final var clInstance = cl.getConstructor().newInstance();

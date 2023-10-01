@@ -1,6 +1,7 @@
 package pvs.task;
 
 
+import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -13,16 +14,18 @@ public class TestSwitch {
     public String runTests() {
         sb.setLength(0);
 
-        emptySwitchStatement(111);
-        colonSwitchStatement();
-        colonSwitchStatement2();
-        stringSwitchStatementColon();
+        noBreaksCases();
 
-        arrowSwitchStatement();
-
-        switchExpressionCase();
-
-        switchExpression2();
+//        emptySwitchStatement(111);
+//        colonSwitchStatement();
+//        colonSwitchStatement2();
+//        stringSwitchStatementColon();
+//
+//        arrowSwitchStatement();
+//
+//        switchExpressionCase();
+//
+//        switchExpression2();
 
         //switchExpressionHard();
 
@@ -142,17 +145,88 @@ public class TestSwitch {
         }
     }
 
+    public void noBreaksCases() {
+        Stream.of("1", "2", "3", "100").forEach(arg -> {
+
+            switch (arg) {
+                default: {
+                    log("default");
+                }
+                case "1": {
+                    log("1");
+                }
+                case "2": {
+                    log("2");
+                }
+                case "3": {
+                    log("3");
+                }
+            }
+
+            switch (arg) {
+
+                case "1": {
+                    log("1");
+                }
+                case "2": {
+                    log("2");
+                }
+                default: {
+                    log("default");
+                }
+                case "3": {
+                    log("3");
+                }
+            }
+        });
+    }
+
+    public String onlyDefaultSwitchExpression(String value) {
+        return switch (value) {
+            default -> "kukue " + value;
+        };
+    }
+
     public int switchExpression(int value) {
         return //aaa
                 switch (value) {
                     default -> 100;
                     case 1 -> {
-                        yield 10;
+                        log("143");
+                        yield switch (value * 2) {
+                            case 0 -> 1;
+                            default -> 1;
+
+                        };
                     }
                     case 2, 3 -> 20;
-                    case 4 -> 25;
+                    case 4 -> {
+                        {
+                            var a = switch (value) {
+                                case 2 -> {
+                                    log("two");
+                                    yield 2;
+                                }
+                                default -> 12;
+                            };
+
+                            log("asd " + a);
+                        }
+                        { //
+                            {
+                                {
+                                    {
+                                        /*wwqd*/
+                                    }
+                                }
+                                //
+                                yield 234;//
+                            }
+                        }
+                    }
                 };
     }
+
 
     public void switchExpressionCase() {
         IntStream.range(0, 10).forEach(i -> log("for " + i + " switch returns " + switchExpression(i)));

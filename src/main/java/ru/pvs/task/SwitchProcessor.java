@@ -4,6 +4,8 @@ import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.*;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
+import spoon.support.reflect.code.CtAssignmentImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,8 @@ import java.util.stream.Stream;
 public class SwitchProcessor extends AbstractProcessor {
     @Override
     public boolean isToBeProcessed(CtElement candidate) {
-        return candidate instanceof CtSwitch<?> || candidate instanceof CtSwitchExpression<?, ?> || candidate instanceof CtClass<?>;
+        return true;
+        //return candidate instanceof CtSwitch<?> || candidate instanceof CtSwitchExpression<?, ?> || candidate instanceof CtClass<?>;
     }
 
     @Override
@@ -28,10 +31,17 @@ public class SwitchProcessor extends AbstractProcessor {
         }
     }
 
+    private int switchExpressionIndex = 1000;
+
     private void process(CtSwitchExpression<?, ?> sw) {
-        CtLiteral<Object> literal = getFactory().createLiteral();
-        literal.setValue(127);
-        sw.replace(literal);
+        switchExpressionIndex++;
+
+        final var switchMethodBodyGenerator = new SwitchMethodBodyGenerator(switchExpressionIndex, sw);
+        final var switchExpressionMethod = switchMethodBodyGenerator.generate();
+
+        sw.getParent(CtClass.class).addMethod(switchExpressionMethod);
+
+        sw.replace(sw.getFactory().createCodeSnippetExpression(switchMethodBodyGenerator.methodName + "(" + sw.getSelector() + ")"));
     }
 
     private void process(CtSwitch<?> sw) {
@@ -53,7 +63,11 @@ public class SwitchProcessor extends AbstractProcessor {
 
     private String getCodeForStatementArrowCase(CtSwitch<?> sw) {
 
-        // if(v == e1) {stts1} else if (v == e2) {stts2}... else {stts3}
+        // if(v == e1) {stts1}
+        //      else
+        // if (v == e2) {stts2}
+        //      ... else ...
+        // {stts3}
 
         return Stream.concat(
                 sw.getCases().stream()
