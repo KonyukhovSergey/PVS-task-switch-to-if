@@ -9,6 +9,7 @@ import spoon.processing.AbstractProcessor;
 import spoon.reflect.declaration.CtClass;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
@@ -59,8 +60,8 @@ public class TestSwitchRunner {
         return Arrays.stream(cl.getDeclaredMethods())
                 .filter(method -> method.getParameterCount() == 0)
                 .filter(method -> method.getReturnType() == String.class)
-                .filter(method -> method.getName().startsWith("test"))
-                .map(method -> method.getName())
+                .map(Method::getName)
+                .filter(name -> name.startsWith("test"))
                 .toList();
     }
 
