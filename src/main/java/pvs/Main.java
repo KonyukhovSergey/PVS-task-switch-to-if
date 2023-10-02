@@ -1,5 +1,6 @@
 package pvs;
 
+import pvs.task.SwitchProcessor;
 import spoon.Launcher;
 
 import java.io.File;
@@ -9,45 +10,27 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public class Main {
-    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private static final String ARG_NAME_FOR_INPUT = "--ARG_NAME_FOR_INPUT";
+    private static final String ARG_NAME_FOR_OUTPUT = "--ARG_NAME_FOR_OUTPUT";
 
-//        final var expected = new TestSwitch().runTests();
-//
-//        System.out.println(expected);
-//
-//        System.out.println("\n\n-----------------------------------\n");
-//
-//        final String[] largs = {
-//                "-i", "src/test/java/pvs/task",
-//                "-o", "target/spooned/",
-//                //"-p", "ru.pvs.task.SwitchProcessor",
-//                "--compile"
-//        };
-//
-//        final Launcher launcher = new Launcher();
-//        launcher.addProcessor(new SwitchProcessor());
-//
-//        launcher.setArgs(largs);
-//        launcher.getEnvironment().setComplianceLevel(18);
-//        launcher.run();
-//
-//        final var cl = loadSpoonedClass();
-//        final var clInstance = cl.getConstructor().newInstance();
-//        final var actual = cl.getMethod("runTests").invoke(clInstance);
-//
-//        System.out.println(actual);
-//
-//        org.junit.Assert.assertEquals(expected, actual);
-
+    private static String getOptionValue(String[] args, String option) {
+        for (int i = 0; i < args.length - 1; i++) {
+            if (args[i].equals(option)) {
+                return args[i + 1];
+            }
+        }
+        System.out.println("there is no option: `" + option + "` in the program");
+        return null;
     }
 
-//    public static Class loadSpoonedClass() {
-//        final var file = new File("spooned-classes");
-//        try {
-//            final var classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()});
-//            return classLoader.loadClass("pvs.task.TestSwitch2");
-//        } catch (MalformedURLException | ClassNotFoundException e) {
-//            return null;
-//        }
-//    }
+    public static void main(String[] args) {
+        final var launcher = new Launcher();
+        launcher.setArgs(new String[]{
+                "-i", getOptionValue(args, ARG_NAME_FOR_INPUT),
+                "-o", getOptionValue(args, ARG_NAME_FOR_OUTPUT)
+        });
+        launcher.addProcessor(new SwitchProcessor());
+        launcher.getEnvironment().setComplianceLevel(18);
+        launcher.run();
+    }
 }
