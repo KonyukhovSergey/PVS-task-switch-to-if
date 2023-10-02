@@ -3,12 +3,6 @@ package pvs;
 import pvs.task.SwitchProcessor;
 import spoon.Launcher;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-
 public class Main {
     private static final String ARG_NAME_FOR_INPUT = "--ARG_NAME_FOR_INPUT";
     private static final String ARG_NAME_FOR_OUTPUT = "--ARG_NAME_FOR_OUTPUT";

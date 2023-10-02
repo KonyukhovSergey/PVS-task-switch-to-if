@@ -20,7 +20,6 @@ public class TestSwitchRunner {
     @Test
     public void test() {
         try {
-
             Launcher launcher = new Launcher();
             launcher.setArgs(new String[]{"--compile"});
             launcher.getEnvironment().setComplianceLevel(18);
@@ -54,7 +53,6 @@ public class TestSwitchRunner {
             throw new RuntimeException(e);
         }
     }
-
 
     private List<String> getTestMethods(Class<?> cl) {
         return Arrays.stream(cl.getDeclaredMethods())
