@@ -6,105 +6,7 @@ import java.util.stream.Stream;
 
 public class TestSwitch2222 {
 
-    private final StringBuilder sb = new StringBuilder();
-
-    public String runTests() {
-        sb.setLength(0);
-
-        noBreaksCases();
-
-//        emptySwitchStatement(111);
-//        colonSwitchStatement();
-//        colonSwitchStatement2();
-//        stringSwitchStatementColon();
-//
-//        arrowSwitchStatement();
-//
-//        switchExpressionCase();
-//
-//        switchExpression2();
-
-        //switchExpressionHard();
-
-        return sb.toString();
-    }
-
-    private void log(String message) {
-        sb.append("%s%n".formatted(message));
-    }
-
-    public void colonSwitchStatement2() {
-        for (int i = 0; i < 10; i++) {
-            log("--- sw for " + i + " ---");
-            switch (i) {
-                case 1:
-                    log("one");
-                case 3:
-                    break;
-                default:
-                    log("default");
-                case 4:
-                    log("two or three");
-                    break;
-                case 5:
-                case 2:
-                    log("three");
-                    break;
-            }
-        }
-    }
-
-    public void arrowSwitchStatement() {
-        for (int value = 0; value < 10; value++) {
-            log("-- arrow switch for " + value + " --");
-            switch (value) {
-                case 1 -> {
-                    log("one 10");
-                    log("one +2");
-                }
-                default -> log("default 100");
-                case 2, 3 -> log("2 or 3");
-                case 4 -> log("4");
-            }
-        }
-    }
-
-    public void noBreaksCases() {
-        Stream.of("1", "2", "3", "100").forEach(arg -> {
-
-            switch (arg) {
-                default: {
-                    log("default");
-                }
-                case "1": {
-                    log("1");
-                }
-                case "2": {
-                    log("2");
-                }
-                case "3": {
-                    log("3");
-                }
-            }
-
-            switch (arg) {
-
-                case "1": {
-                    log("1");
-                }
-                case "2": {
-                    log("2");
-                }
-                default: {
-                    log("default");
-                }
-                case "3": {
-                    log("3");
-                }
-            }
-        });
-    }
-
+/*
     public String onlyDefaultSwitchExpression(String value) {
         return switch (value) {
             default -> "kukue " + value;
@@ -140,7 +42,7 @@ public class TestSwitch2222 {
                             {
                                 {
                                     {
-                                        /*wwqd*/
+                                      */   /*wwqd*/ /*
                                     }
                                 }
                                 //
@@ -169,6 +71,8 @@ public class TestSwitch2222 {
             case 2, 3 -> 20;
             case 4 -> 25;
         }));
+
+*/
 //
 //        // в лямбдах ложка скипает свичи
 //        IntStream.range(0, 10).forEach(i -> log("aaaa " + switch (i) {
@@ -179,7 +83,7 @@ public class TestSwitch2222 {
 //            case 2, 3 -> 20;
 //            case 4 -> 25;
 //        }));
-    }
+//       }
 
 //    public void switchExpressionHard() {
 //        IntStream.range(0, 10).map(i -> switch (i) {
