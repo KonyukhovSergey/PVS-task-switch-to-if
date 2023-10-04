@@ -1,5 +1,7 @@
 Программа для конвертации switch в конструкцию if ... else if ... else.
 
+Собранный jar файл https://github.com/KonyukhovSergey/PVS-task-switch-to-if/blob/main/out/artifacts/java_source_code_processor.jar
+
 Юнит тест из примера в задании не получится написать, потому что в приведенном примере исходный и преобразованный код не эквивалентны.
 В частности для input == 7 исходный код выведет
 
